@@ -20,7 +20,15 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         custom_name = request.form.get('custom_name', '')
-        filename = secure_filename(custom_name if custom_name else file.filename)
+        original_filename = secure_filename(file.filename)
+        file_extension = os.path.splitext(original_filename)[1]  # 元のファイルの拡張子を取得
+        
+        if custom_name:
+            # ユーザーが指定した名前に元の拡張子を追加
+            filename = secure_filename(custom_name) + file_extension
+        else:
+            filename = original_filename
+        
         folder_name = 'uploads/'
         full_file_name = os.path.join(folder_name, filename)
         
@@ -33,4 +41,5 @@ def upload_file():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
